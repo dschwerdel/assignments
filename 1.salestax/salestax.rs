@@ -9,15 +9,6 @@ struct Inputs {
 
 fn main() {
 
-	// Word Filter for non taxable products
-	let tax_filter: [String;7] = ["book".to_string(), 
-				"food".to_string(), 
-				"medical".to_string(), 
-				"pill".to_string(), 
-				"chocolate".to_string(), 
-				"books".to_string(), 
-				"pills".to_string()];
-
 	// Test Input 1
 	let t1: [Inputs; 3] = [
 		Inputs {qnt: 1, txt: "book".to_string(), prc: 12.49},
@@ -39,46 +30,72 @@ fn main() {
 		Inputs {qnt: 1, txt: "box of imported chocolates".to_string(), prc: 11.25}
 	];
 
+	println!("{}", "Output 1:");
+	build_invoice(&t1);
+	println!("\n{}", "Output 2:");
+	build_invoice(&t2);
+	println!("\n{}", "Output 3:");
+	build_invoice(&t3);
+
+}
+
+
+fn build_invoice (arr: &[Inputs]) {
+
+	// Word Filter for non taxable products
+	let tax_filter: [String;7] = ["book".to_string(), 
+				"food".to_string(), 
+				"medical".to_string(), 
+				"pill".to_string(), 
+				"chocolate".to_string(), 
+				"books".to_string(), 
+				"pills".to_string()];
+
 	// Price, Tax and Sum as float
 	let mut prc: f32 = 0.0;
 	let mut tax: f32 = 0.0;
 	let mut sum: f32 = 0.0;
 
-
 	// For every element of the Test input
-	for i in 0..t3.len() {
+	for i in 0..arr.len() {
 		
 		// compare the String txt with every entry of Word Filter list
 		'taxable: for j in 0..tax_filter.len() {
 
 			// if the filter matches: break loop
-			if t3[i].txt.contains(&tax_filter[j]) {
-				prc = t3[i].prc;
+			if arr[i].txt.contains(&tax_filter[j]) {
+				prc = arr[i].prc;
 				break 'taxable;
 			} else {
 				// else add Sales tax of 10%
-				prc = t3[i].prc + 0.1*(t3[i].prc) ;
+				prc = arr[i].prc + 0.1*(arr[i].prc) ;
 			}
 		
 		}
 		
 		// if the String txt is imported then ...
-		if t3[i].txt.contains("import") {
+		if arr[i].txt.contains("import") {
 				
 			// ... +5% on sales price
-			// slightly rounding issue left here 
-			prc = prc + 0.05*(t3[i].prc) ;
+
+			let itax = arr[i].prc * 0.05;
+			prc = prc + itax ;
+		/*	println!("> {}", itax);
+			let rond = (arr[i].prc * 100.0).round() / 100.0;
+			println!("> {}", rond);
+			
+		*/
 		}
 
 		// The Tax is the substract of Brutto - Netto
-		tax = tax + prc - t3[i].prc;
+		tax = tax + prc - arr[i].prc;
 		sum = sum + prc;
 
 		// Print every aricle of the test list
-		println!(">  {}  {}:   {:.2} ", t3[i].qnt, t3[i].txt, prc);
+		println!(">  {}  {}:   {:.2} ", arr[i].qnt, arr[i].txt, prc);
 		
 		// only at the end print the Tax and total
-		if i == t3.len() -1 {
+		if i == arr.len() -1 {
 			println!(">  Sales Tax:   {:.2} ", tax);
 			println!(">  Total:   {:.2} ", sum);
 		}
