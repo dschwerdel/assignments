@@ -147,7 +147,7 @@ function getInput($file) {
 	}
 
 	// sort the list array by talk length to get the long talks out of the way first
-	//usort($list, function ($a, $b) { return -($a['time'] <=> $b['time']); });
+	usort($list, function ($a, $b) { return -($a['time'] <=> $b['time']); });
 	return $list;
 }
 
